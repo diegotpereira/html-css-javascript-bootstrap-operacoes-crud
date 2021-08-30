@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD FROM API</title>
+
+    <link rel="stylesheet" href="css/meuEstilo.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-minhanav">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Meu App</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="d-flex bd-highlight mb-3">
+            <div class="me-auto p-2 bd-highlight">
+                <h2>Usuários</h2>
+            </div>
+            <div class="p-2 bd-highlight">
+                <button type="button" class="btn btn-secondary" onclick="mostrarCaixaCriacaoUsuario()">Criar</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Foto de Perfil</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Sobrenome</th>
+                        <th scope="col">Usuário</th>
+                        <th scope="col">Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="minhaTabela">
+                    <tr>
+                        <th scope="row" colspan="5">Carregando...</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="js/index.js"></script>
+</body>
+
+</html>
