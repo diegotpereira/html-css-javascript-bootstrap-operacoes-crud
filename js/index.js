@@ -1,6 +1,6 @@
 function carregarTabela() {
     const xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "https://www.mecallapi.com/api/users");
+    xhttp.open("GET", "http://localhost:8080/api/usuarios");
     xhttp.send();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -9,11 +9,11 @@ function carregarTabela() {
             const objects = JSON.parse(this.responseText);
             for (let object of objects) {
                 trHTML += '<tr>';
-                trHTML += '<td>' + object['id'] + '</tr>';
-                trHTML += '<td><img width="50px" src="' + object['avatar'] + '" class="avatar"></td>';
-                trHTML += '<td>' + object['fname'] + '</td>';
-                trHTML += '<td>' + object['lname'] + '</td>';
-                trHTML += '<td>' + object['username'] + '</td>';
+                trHTML += '<td>' + object['id'] + '</td>';
+                trHTML += '<td><img width="50px" src="' + object['imageURL'] + '" class="imageURL"></td>';
+                trHTML += '<td>' + object['nome'] + '</td>';
+                trHTML += '<td>' + object['sobrenome'] + '</td>';
+                trHTML += '<td>' + object['usuario'] + '</td>';
                 trHTML += '<td><button type="button" class="btn btn-outline-secondary" onclick="mostrarCaixaEdicaoUsuario(' + object['id'] + ')">Editar</button>';
                 trHTML += '<button type="button" class="btn btn-outline-danger" onclick="deletarUsuario(' + object['id'] + ')">Excluir</button></td>';
                 trHTML += "</tr>";
@@ -30,9 +30,10 @@ function mostrarCaixaCriacaoUsuario() {
     swal.fire({
         title: "Novo Usuário",
         html: '<input id="id" type="hidden">' +
-            '<input id="fname" class="swal2-input" placeholder="Nome">' +
-            '<input id="lname" class="swal2-input" placeholder="Sobrenome">' +
-            '<input id="username" class="swal2-input" placeholder="Usuário">' +
+            '<input id="imageURL" class="swal2-input" placeholder="Imagem de Perfil">' +
+            '<input id="nome" class="swal2-input" placeholder="Nome">' +
+            '<input id="sobrenome" class="swal2-input" placeholder="Sobrenome">' +
+            '<input id="usuario" class="swal2-input" placeholder="Usuário">' +
             '<input id="email" class="swal2-input" placeholder="Email">',
 
         focusConfirm: false,
@@ -44,20 +45,22 @@ function mostrarCaixaCriacaoUsuario() {
 }
 
 function criarUsuario() {
-    const fname = document.getElementById("fname").value;
-    const lname = document.getElementById("lname").value;
-    const username = document.getElementById("username").value;
+
+    const imageURL = document.getElementById("imageURL").value;
+    const nome = document.getElementById("nome").value;
+    const sobrenome = document.getElementById("sobrenome").value;
+    const usuario = document.getElementById("usuario").value;
     const email = document.getElementById("email").value;
 
     const xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "https://www.mecallapi.com/api/users/create");
+    xhttp.open("POST", "http://localhost:8080/api/add");
     xhttp.setRequestHeader("Content-Type", "application/json; charset = UTF-8");
     xhttp.send(JSON.stringify({
-        "fname": fname,
-        "lname": lname,
-        "username": username,
+        "nome": nome,
+        "sobrenome": sobrenome,
+        "usuario": usuario,
         "email": email,
-        "avatar": "https://www.mecallapi.com/users/cat.png"
+        "imageURL": imageURL
     }));
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -74,20 +77,22 @@ function mostrarCaixaEdicaoUsuario(id) {
 
     console.log(id);
     const xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "https://www.mecallapi.com/api/users/" + id);
+    xhttp.open("GET", "http://localhost:8080/api/usuarios/" + id);
     xhttp.send();
+    console.log(this.responseText);
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             const objects = JSON.parse(this.responseText);
-            const user = objects['user'];
-            console.log(user);
+            const usuario = objects['usuario'];
+            console.log(usuario);
             Swal.fire({
                 title: 'Editar Usuário',
-                html: '<input id="id" type="hidden" value=' + user['id'] + '>' +
-                    '<input id="fname" class="swal2-input" placeholder="Nome" value="' + user['fname'] + '">' +
-                    '<input id="lname" class="swal2-input" placeholder="Sobrenome" value="' + user['lname'] + '">' +
-                    '<input id="username" class="swal2-input" placeholder="Usuário" value="' + user['username'] + '">' +
-                    '<input id="email" class="swal2-input" placeholder="Email" value="' + user['email'] + '">',
+                html: '<input id="id" type="hidden" value=' + usuario['id'] + '>' +
+                    '<input id="imageURL" class="swal2-input" placeholder="Imagem de Perfil" value="' + usuario['imageURL'] + '">' +
+                    '<input id="nome" class="swal2-input" placeholder="Nome" value="' + usuario['nome'] + '">' +
+                    '<input id="sobrenome" class="swal2-input" placeholder="Sobrenome" value="' + usuario['sobrenome'] + '">' +
+                    '<input id="usuario" class="swal2-input" placeholder="Usuário" value="' + usuario['usuario'] + '">' +
+                    '<input id="email" class="swal2-input" placeholder="Email" value="' + usuario['email'] + '">',
                 focusConfirm: false,
                 preConfirm: () => {
                     editarUsuario();
@@ -100,21 +105,21 @@ function mostrarCaixaEdicaoUsuario(id) {
 function editarUsuario() {
 
     const id = document.getElementById("id").value;
-    const fname = document.getElementById("fname").value;
-    const lname = document.getElementById("lname").value;
-    const username = document.getElementById("username").value;
+    const nome = document.getElementById("nome").value;
+    const sobrenome = document.getElementById("sobrenome").value;
+    const usuario = document.getElementById("usuario").value;
     const email = document.getElementById("email").value;
 
     const xhttp = new XMLHttpRequest();
-    xhttp.open("PUT", "https://www.mecallapi.com/api/users/update");
+    xhttp.open("PUT", "http://localhost:8080/api/usuario");
     xhttp.setRequestHeader("Content-Type", "application/json; charset = UTF-8");
     xhttp.send(JSON.stringify({
         "id": id,
-        "fname": fname,
-        "lname": lname,
-        "username": username,
+        "nome": nome,
+        "sobrenome": sobrenome,
+        "usuario": usuario,
         "email": email,
-        "avatar": "https://www.mecallapi.com/users/cat.png"
+        "imageURL": imageURL
     }));
 
     xhttp.onreadystatechange = function() {
