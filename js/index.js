@@ -13,7 +13,7 @@ function carregarTabela() {
                 trHTML += '<td><img width="50px" src="' + object['imageURL'] + '" class="imageURL"></td>';
                 trHTML += '<td>' + object['nome'] + '</td>';
                 trHTML += '<td>' + object['sobrenome'] + '</td>';
-                trHTML += '<td>' + object['usuario'] + '</td>';
+                trHTML += '<td>' + object['usuarionome'] + '</td>';
                 trHTML += '<td><button type="button" class="btn btn-outline-secondary" onclick="mostrarCaixaEdicaoUsuario(' + object['id'] + ')">Editar</button>';
                 trHTML += '<button type="button" class="btn btn-outline-danger" onclick="deletarUsuario(' + object['id'] + ')">Excluir</button></td>';
                 trHTML += "</tr>";
@@ -33,7 +33,7 @@ function mostrarCaixaCriacaoUsuario() {
             '<input id="imageURL" class="swal2-input" placeholder="Imagem de Perfil">' +
             '<input id="nome" class="swal2-input" placeholder="Nome">' +
             '<input id="sobrenome" class="swal2-input" placeholder="Sobrenome">' +
-            '<input id="usuario" class="swal2-input" placeholder="Usuário">' +
+            '<input id="usuarionome" class="swal2-input" placeholder="Usuário">' +
             '<input id="email" class="swal2-input" placeholder="Email">',
 
         focusConfirm: false,
@@ -49,7 +49,7 @@ function criarUsuario() {
     const imageURL = document.getElementById("imageURL").value;
     const nome = document.getElementById("nome").value;
     const sobrenome = document.getElementById("sobrenome").value;
-    const usuario = document.getElementById("usuario").value;
+    const usuarionome = document.getElementById("usuarionome").value;
     const email = document.getElementById("email").value;
 
     const xhttp = new XMLHttpRequest();
@@ -58,7 +58,7 @@ function criarUsuario() {
     xhttp.send(JSON.stringify({
         "nome": nome,
         "sobrenome": sobrenome,
-        "usuario": usuario,
+        "usuarionome": usuarionome,
         "email": email,
         "imageURL": imageURL
     }));
@@ -75,28 +75,34 @@ function criarUsuario() {
 
 function mostrarCaixaEdicaoUsuario(id) {
 
-    console.log(id);
-    const xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "http://localhost:8080/api/usuarios/" + id);
+    var url = "http://localhost:8080/api/usuarios/";
+
+    // console.log(id);
+    var xhttp = new XMLHttpRequest();
+    // xhttp.responseType = 'json';
+    xhttp.open('GET', url + id, true);
+    // xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.send();
-    console.log(this.responseText);
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            const objects = JSON.parse(this.responseText);
-            const usuario = objects['usuario'];
-            console.log(usuario);
+            var objects = JSON.parse(this.responseText);
+            var usuario = JSON.stringify(objects);
             Swal.fire({
-                title: 'Editar Usuário',
-                html: '<input id="id" type="hidden" value=' + usuario['id'] + '>' +
-                    '<input id="imageURL" class="swal2-input" placeholder="Imagem de Perfil" value="' + usuario['imageURL'] + '">' +
-                    '<input id="nome" class="swal2-input" placeholder="Nome" value="' + usuario['nome'] + '">' +
-                    '<input id="sobrenome" class="swal2-input" placeholder="Sobrenome" value="' + usuario['sobrenome'] + '">' +
-                    '<input id="usuario" class="swal2-input" placeholder="Usuário" value="' + usuario['usuario'] + '">' +
-                    '<input id="email" class="swal2-input" placeholder="Email" value="' + usuario['email'] + '">',
+                title: 'Editar User',
+                html: `<input id="id" type="hidden" value="${usuario.id}"> 
+                    <input id="nome" class="swal2-input" placeholder="First" value="${usuario.nome}">
+                    <input id="sobrenome" class="swal2-input" placeholder="Last" value="${usuario.sobrenome}">
+                    <input id="username" class="swal2-input" placeholder="Username" value="' + usuario['username'] + '">
+                    <input id="email" class="swal2-input" placeholder="Email" value="' + usuario['email'] + '">`,
                 focusConfirm: false,
-                preConfirm: () => {
-                    editarUsuario();
-                }
+                preConfirm: () => ({
+
+                    id: document.getElementById("id").value,
+                    nome: document.getElementById('nome').value,
+                    sobrenome: document.getElementById('sobrenome').value
+
+                    // editarUsuario();
+                }),
             })
         }
     };
@@ -107,7 +113,7 @@ function editarUsuario() {
     const id = document.getElementById("id").value;
     const nome = document.getElementById("nome").value;
     const sobrenome = document.getElementById("sobrenome").value;
-    const usuario = document.getElementById("usuario").value;
+    const usuarionome = document.getElementById("usuarionome").value;
     const email = document.getElementById("email").value;
 
     const xhttp = new XMLHttpRequest();
@@ -117,7 +123,7 @@ function editarUsuario() {
         "id": id,
         "nome": nome,
         "sobrenome": sobrenome,
-        "usuario": usuario,
+        "usuarionome": usuarionome,
         "email": email,
         "imageURL": imageURL
     }));
